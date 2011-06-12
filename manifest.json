@@ -1,0 +1,20 @@
+
+{
+  "name": "Reasy",
+  "version": "0.0.1",
+  "description": "Reasy for Chrome",
+  "background_page": "background.html",
+  "options_page": "options.html",
+  "permissions": [
+    "tabs",
+    "contextMenus",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "icons": {
+    "16": "icon48.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
+
