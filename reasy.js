@@ -192,6 +192,14 @@ REASY.play = function () {
   if (REASY.state != "running")
     return;
 
+  // It appears that if key events continue coming in, the setTimeout function
+  // returns quite early than expected. This is a workaround for that
+  var now = Date.now();
+  if (REASY.nextTick > 0 && REASY.nextTick > now) {
+    setTimeout(REASY.play, REASY.nextTick - now);
+    return;
+  }
+
   if (index < words.length) {
     var word = words[index];
     REASY.textArea.text(word);
@@ -202,6 +210,7 @@ REASY.play = function () {
     REASY.nextIdx++;
 
     // Schedule read for next word
+    REASY.nextTick = Date.now() + delay;
     setTimeout(REASY.play, delay);
   } else {
     REASY.hideStage();
