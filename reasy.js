@@ -4,20 +4,68 @@ window.REASY = {};
 var REASY = window.REASY;
 
 // RegEx to detect punctuation pause
-REASY.punc = /[,.;()!:\?]$/;
+REASY.punc = /[^\w"']/;
 
 // Other initialization
 REASY.state = "stopped";
 REASY.wpm = "450";
+REASY.nextTick = 0;
 
 // Print a log message
-REASY.log = function(message) {
-  console.log("REASY: " + message);
+REASY.log = function (message) {
+  console.log("REASY <" + Date.now() + ">: " + message);
+};
+
+REASY.keyHandler = function () {
+  event.stopImmediatePropagation();
+  event.preventDefault();
+  if (REASY.keystate == "handling")
+    return;
+
+  if (event.keyCode == ("q".charCodeAt(0) - 32))
+    REASY.hideStage();
+
+  var wasAlreadyPaused = (REASY.state == "paused")
+  REASY.state = "paused";
+  setTimeout(function (code) {
+      var idx = REASY.nextIdx;
+
+      // Subtract 32 from keycode for alphabets
+      if (code == ("b".charCodeAt(0) - 32)) {
+        // Backward
+        idx -= 10;
+        if (idx < 0)
+          idx = 0;
+        REASY.nextIdx = idx;
+      } else if (code == ("f".charCodeAt(0) - 32)) {
+        // Forward
+        idx += 10;
+        if (idx > REASY.words.length)
+          idx = REASY.words.length;
+        REASY.nextIdx = idx;
+      } else if (code == "0".charCodeAt(0)) {
+        // Beginning
+        REASY.nextIdx = 0;
+      }
+
+      // Pause/Resume
+      if (code == ("p".charCodeAt(0) - 32)) {
+        if (!wasAlreadyPaused) {
+          REASY.keystate = "";
+          return;
+        }
+      }
+
+      // Space to stop
+      REASY.state = "running";
+      REASY.play();
+      REASY.keystate = "";
+      }, 600, event.keyCode);
 };
 
 // Insert necessary HTML items into the page so that we have a stage
 // to display the text
-REASY.prepareStage = function() {
+REASY.prepareStage = function () {
   try {
     REASY.stage = $("#reasy-stage");
     if (REASY.stage.length != 0) {
@@ -26,11 +74,13 @@ REASY.prepareStage = function() {
       REASY.wpmSpan = $("#reasy-wpm");
       REASY.wpmSpan.text(REASY.wpm);
       REASY.stage.css("display", "block");
+
+      $(document).keyup(REASY.keyHandler);
       return;
     }
 
     // Create the stage
-    var stageH = 100;
+    var stageH = 125;
     var stageW = 500;
     var stageX = window.innerWidth - stageW - 30;
     var stageY = 10;
@@ -99,7 +149,7 @@ REASY.prepareStage = function() {
               "overflow": "hidden",
               "font-size": "30pt"
               })
-      .click(function() {
+      .click(function () {
         if (REASY.state == "paused") {
           REASY.state = "running";
           REASY.play();
@@ -115,6 +165,8 @@ REASY.prepareStage = function() {
     REASY.textArea = textArea;
     REASY.stage = stage;
     REASY.wpmSpan = wpmSpan;
+
+    $(document).keyup(REASY.keyHandler);
   } catch (e) {
     REASY.log(e);
     REASY.stage = null;
@@ -123,11 +175,12 @@ REASY.prepareStage = function() {
 
 
 // Hides the stage
-REASY.hideStage = function() {
+REASY.hideStage = function () {
   if (REASY.stage != null)
     REASY.stage.css("display", "none");
   REASY.state = "stopped";
   REASY.textArea.text("");
+  $(document).unbind("keyup");
 };
 
 
@@ -158,9 +211,10 @@ REASY.play = function () {
   }
 };
 
-REASY.run = function() {
+REASY.run = function () {
+  REASY.state = "running";
+
   // Get the selection
-  debugger;
   var selection = window.getSelection().toString();
   if (selection.length < 25) {
     REASY.log("Length of selected string less than threshold");
@@ -171,7 +225,6 @@ REASY.run = function() {
   REASY.nextIdx = 0;
 
   REASY.prepareStage();
-  REASY.state = "running";
   REASY.play();
 };
 
