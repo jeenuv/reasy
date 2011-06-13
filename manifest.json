@@ -8,9 +8,13 @@
   "permissions": [
     "tabs",
     "contextMenus",
-    "http://*/*",
-    "https://*/*"
+    "<all_urls>"
   ],
+  "content_scripts" : [ {
+      "matches": [ "<all_urls>", "file:///*/*" ],
+      "js": [ "jquery-1.6.1.min.js", "reasy.js" ],
+      "run_at": "document_end"
+      } ],
   "icons": {
     "16": "icon48.png",
     "48": "icon48.png",

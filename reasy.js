@@ -25,6 +25,9 @@ REASY.keyHandler = function () {
   if (event.keyCode == ("q".charCodeAt(0) - 32))
     REASY.hideStage();
 
+  REASY.keystate = "handling";
+
+  // Signal to pause reading and wait until it's
   var wasAlreadyPaused = (REASY.state == "paused")
   REASY.state = "paused";
   setTimeout(function (code) {
@@ -39,7 +42,7 @@ REASY.keyHandler = function () {
         REASY.nextIdx = idx;
       } else if (code == ("f".charCodeAt(0) - 32)) {
         // Forward
-        idx += 10;
+        idx = parseInt(idx) + 10;
         if (idx > REASY.words.length)
           idx = REASY.words.length;
         REASY.nextIdx = idx;
@@ -228,6 +231,7 @@ REASY.run = function () {
   var selection = window.getSelection().toString();
   if (selection.length < 25) {
     REASY.log("Length of selected string less than threshold");
+    REASY.state = "stopped";
     return;
   }
 
@@ -238,6 +242,6 @@ REASY.run = function () {
   REASY.play();
 };
 
-REASY.run();
+REASY.log("Reasy ready");
 
 // vim:sw=2:
