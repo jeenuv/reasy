@@ -4,7 +4,7 @@ window.REASY = {};
 var REASY = window.REASY;
 
 // RegEx to detect punctuation pause
-REASY.punc = /[^\w"']/;
+REASY.punc = /[.,;:?!()-]/;
 
 // Other initialization
 REASY.state = "stopped";
