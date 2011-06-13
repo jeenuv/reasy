@@ -238,6 +238,6 @@ REASY.run = function () {
   REASY.play();
 };
 
-REASY.run();
+REASY.log("Reasy ready");
 
 // vim:sw=2:
