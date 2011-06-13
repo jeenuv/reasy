@@ -95,7 +95,8 @@ REASY.prepareStage = function () {
               "background-color": "black",
               "font-family": "sans-serif",
               "z-index": "10000",
-              "display": "block"
+              "display": "block",
+              "border-radius": "10px"
           })
       .attr("id", "reasy-stage");
 
