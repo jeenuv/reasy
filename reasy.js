@@ -148,7 +148,8 @@ REASY.prepareStage = function () {
       .attr("id", "reasy-text")
       .css( { "text-align": "center",
               "overflow": "hidden",
-              "font-size": "30pt"
+              "font-size": "30pt",
+              "margin-top": "15px"
               })
       .click(function () {
         if (REASY.state == "paused") {
