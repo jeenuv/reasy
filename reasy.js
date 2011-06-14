@@ -4,6 +4,7 @@ window.REASY = {};
 var REASY = window.REASY;
 
 // RegEx to detect punctuation pause
+REASY.debug = 1;
 REASY.punc = /[.,;:?!()-]/;
 
 // Other initialization
@@ -13,7 +14,8 @@ REASY.nextTick = 0;
 
 // Print a log message
 REASY.log = function (message) {
-  console.log("REASY <" + Date.now() + ">: " + message);
+  if (REASY.debug)
+    console.log("REASY <" + Date.now() + ">: " + message);
 };
 
 REASY.keyHandler = function () {
