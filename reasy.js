@@ -20,14 +20,37 @@ REASY.log = function (message) {
     console.log("REASY <" + Date.now() + ">: " + message);
 };
 
+
+// To summon Reasy via. keyboard shortcut
+REASY.launchHandler = function () {
+  // TODO: option
+  if (event.keyCode == ("r".charCodeAt(0) - 32)
+      && event.shiftKey
+      && REASY.state == "stopped")
+    REASY.run();
+};
+
+
+// Mouse handler acting as a watchdog to user's text selection
+REASY.mouseHandler = function () {
+  if (window.getSelection().toString().length > 0) {
+    $(document).unbind("keyup", REASY.launchHandler)
+               .keyup(REASY.launchHandler);
+  } else
+    $(document).unbind("keyup", REASY.launchHandler);
+};
+
+
 REASY.keyHandler = function () {
   event.stopImmediatePropagation();
   event.preventDefault();
   if (REASY.keystate == "handling")
     return;
 
-  if (event.keyCode == ("q".charCodeAt(0) - 32))
+  if (event.keyCode == ("q".charCodeAt(0) - 32)) {
     REASY.hideStage();
+    return false;
+  }
 
   REASY.keystate = "handling";
 
@@ -68,6 +91,8 @@ REASY.keyHandler = function () {
       REASY.play();
       REASY.keystate = "";
       }, 600, event.keyCode);
+
+  return false;
 };
 
 // Insert necessary HTML items into the page so that we have a stage
@@ -183,7 +208,9 @@ REASY.hideStage = function () {
     REASY.stage.css("display", "none");
   REASY.state = "stopped";
   REASY.textArea.text("");
-  $(document).unbind("keyup");
+  $(document).unbind("keyup", REASY.keyHandler);
+  $(document).unbind("keyup", REASY.launchHandler)
+    .keyup(REASY.launchHandler);
 };
 
 
@@ -215,16 +242,15 @@ REASY.play = function () {
     // Schedule read for next word
     REASY.nextTick = Date.now() + delay;
     setTimeout(REASY.play, delay);
-  } else {
+  } else
     REASY.hideStage();
-
-    // Unselect
-    window.getSelection().removeAllRanges();
-  }
 };
 
 REASY.run = function () {
   REASY.state = "running";
+
+  // Launcher is not needed while we're in session
+  $(document).unbind("keyup", REASY.launchHandler);
 
   // Get the selection
   var selection = window.getSelection().toString();
@@ -241,6 +267,9 @@ REASY.run = function () {
   REASY.play();
 };
 
+// Register mouse handler permanently so that Reasy can be
+// summoned using the designated short cut
+$(document).mouseup(REASY.mouseHandler);
 REASY.log("Reasy ready");
 
 // vim:sw=2:
