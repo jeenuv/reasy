@@ -1,0 +1,41 @@
+
+/* Main stage */
+#reasy-stage {
+  position: fixed;
+  z-index: 10000;
+  display: block;
+  border-radius: 10px;
+  /* Remaining properties set according to option */
+}
+
+/* Close button */
+#reasy-close {
+  position: absolute;
+  margin: 5px;
+  right: 0;
+  top: 0;
+}
+
+/* Title DIV */
+#reasy-title {
+  height: 35px;
+}
+
+/* Buttons for increment and decrement */
+#reasy-title input[type=button] {
+  margin: 5px
+}
+
+/* Information display */
+#reasy-stage span {
+  margin: 5px
+  font-weight: bold;
+}
+
+/* Display area */
+#reasy-text {
+  text-align: center;
+  overflow: hidden;
+  font-size: 30pt;
+  margin-top: 15px;
+}

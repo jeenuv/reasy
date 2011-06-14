@@ -119,17 +119,13 @@ REASY.prepareStage = function () {
 
     // The grand main outer div
     var stage = $("<div>")
-      .css( { "position": "fixed",
-              "left": stageX,
+      .css( { "left": stageX,
               "top": stageY,
               "width": stageW,
               "height": stageH,
               "color": "white",
               "background-color": "black",
-              "font-family": "sans-serif",
-              "z-index": "10000",
-              "display": "block",
-              "border-radius": "10px"
+              "font-family": "sans-serif"
           })
       .attr("id", "reasy-stage");
 
@@ -138,24 +134,19 @@ REASY.prepareStage = function () {
       .attr( { "type": "button",
                "value": " x "
              })
-      .css({ "position": "absolute",
-              "margin": "5px",
-              "right": "0",
-              "top": "0",
-            })
+      .attr("id", "reasy-close")
       .click(function () {
           REASY.hideStage();
           });
 
     // The title div that houses close button, widgets and other text
     // information
-    var titleDiv = $("<div>").css("height", "35px");
+    var titleDiv = $("<div>").attr("id", "reasy-title");
     // Button to reduce WPM
     var wpmDec = $("<input>")
       .attr( { "type": "button",
                "value": " < "
              })
-      .css( { "margin": "5px" })
       .click(function () {
           REASY.wpm = parseInt(REASY.wpm) - 20;
           REASY.wpmSpan.text(REASY.wpm);
@@ -163,16 +154,12 @@ REASY.prepareStage = function () {
     // Text displaying the current WPM
     var wpmSpan = $("<span>")
       .attr("id", "reasy-wpm")
-      .css( { "margin": "5px",
-              "font-weight": "bold"
-            })
       .text(REASY.wpm);
     // Button to increase WPM
     var wpmInc = $("<input>")
       .attr( { "type": "button",
                "value": " > "
              })
-      .css( { "margin": "0px 5px" })
       .click(function () {
           REASY.wpm = parseInt(REASY.wpm) + 20;
           REASY.wpmSpan.text(REASY.wpm);
@@ -186,11 +173,6 @@ REASY.prepareStage = function () {
     // Text area, where we actually display content
     var textArea = $("<div>")
       .attr("id", "reasy-text")
-      .css( { "text-align": "center",
-              "overflow": "hidden",
-              "font-size": "30pt",
-              "margin-top": "15px"
-              })
       // Click means pause/resume
       .click(function () {
         if (REASY.state == "paused") {
