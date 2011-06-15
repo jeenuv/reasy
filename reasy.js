@@ -72,12 +72,14 @@ REASY.keyHandler = function () {
 
       // Subtract 32 from keycode for alphabets
       if (code == ("b".charCodeAt(0) - 32)) {
-        // Backward
-        idx -= 10;
+        REASY.anchorIndex = idx; // Remember where we were
+        // Backward proprotional to the WPM
+        idx -= parseInt(REASY.wpm / 30);
         if (idx < 0)
           idx = 0;
         REASY.nextIdx = idx;
       } else if (code == ("f".charCodeAt(0) - 32)) {
+        REASY.anchorIndex = 0; // Forget the anchor
         // Forward
         idx += 10;
         if (idx > REASY.words.length)
@@ -220,6 +222,7 @@ REASY.hideStage = function () {
     REASY.stage.css("display", "none");
   REASY.state = "stopped";
   REASY.textArea.text("");
+  REASY.anchorIndex = 0;
   $(document).unbind("keyup", REASY.keyHandler);
   $(document).unbind("keyup", REASY.launchHandler)
     .keyup(REASY.launchHandler);
@@ -254,8 +257,13 @@ REASY.play = function () {
     // TODO: factor in length of the word
     if (REASY.punc.test(word) == true)
       delay = 650;
-    else
+    else {
       delay = 60000 / REASY.wpm;
+      // Go slow until we reach back where user pressed back, presumably for
+      // re-reading that part of text
+      if (REASY.anchorIndex > 0 && REASY.anchorIndex >= index)
+        delay *= 2;
+    }
     REASY.nextIdx++;
 
     // Schedule read for updation
