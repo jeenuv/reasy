@@ -19,11 +19,14 @@
 /* Title DIV */
 #reasy-title {
   height: 35px;
+  text-align: left;
+  font-size: 10px;
 }
 
 /* Buttons for increment and decrement */
 #reasy-title input[type=button] {
-  margin: 5px
+  margin: 5px;
+  font-size: inherit;
 }
 
 /* Information display */
@@ -36,6 +39,6 @@
 #reasy-text {
   text-align: center;
   overflow: hidden;
-  font-size: 30pt;
+  font-size: 30px;
   margin-top: 15px;
 }

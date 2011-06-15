@@ -145,7 +145,7 @@ REASY.prepareStage = function () {
     // Button to reduce WPM
     var wpmDec = $("<input>")
       .attr( { "type": "button",
-               "value": " < "
+               "value": "<"
              })
       .click(function () {
           REASY.wpm = parseInt(REASY.wpm) - 20;
@@ -158,7 +158,7 @@ REASY.prepareStage = function () {
     // Button to increase WPM
     var wpmInc = $("<input>")
       .attr( { "type": "button",
-               "value": " > "
+               "value": ">"
              })
       .click(function () {
           REASY.wpm = parseInt(REASY.wpm) + 20;
