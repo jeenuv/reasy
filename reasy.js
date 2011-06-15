@@ -44,9 +44,19 @@ REASY.keyHandler = function () {
   if (REASY.keystate == "handling")
     return;
 
-  // Quit
   if (event.keyCode == ("q".charCodeAt(0) - 32)) {
+    // Quit
     REASY.hideStage();
+    return false;
+  } else if (event.keyCode == 187) { // +
+    // Increase WPM
+    REASY.wpm = parseInt(REASY.wpm) + 10;
+    REASY.wpmSpan.text(REASY.wpm);
+    return false;
+  } else if (event.keyCode == 189) {  // -
+    // Decrease WPM
+    REASY.wpm = parseInt(REASY.wpm) - 10;
+    REASY.wpmSpan.text(REASY.wpm);
     return false;
   }
 
@@ -88,7 +98,8 @@ REASY.keyHandler = function () {
       REASY.state = "running";
       REASY.play();
       REASY.keystate = "";
-      }, 600, event.keyCode);
+      },
+    600, event.keyCode);
 
   return false;
 };
