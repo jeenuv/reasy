@@ -60,6 +60,8 @@ REASY.keyHandler = function () {
     return false;
   }
 
+  REASY.keystate = "handling";
+
   // Signal to pause reading and wait until it's
   var wasAlreadyPaused = (REASY.state == "paused")
   REASY.state = "paused";
@@ -275,6 +277,7 @@ REASY.run = function () {
   var selection = window.getSelection().toString();
   if (selection.length < 25) {
     REASY.log("Length of selected string less than threshold");
+    REASY.state = "stopped";
     return;
   }
 
