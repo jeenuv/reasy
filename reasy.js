@@ -6,6 +6,9 @@ var REASY = window.REASY;
 // RegEx to detect punctuation pause
 REASY.debug = 1;
 REASY.punc = /[.,;:?!()-]/;
+REASY.fullStop = /\.\s*$/;
+
+REASY.ignoreOneFullstop = false;
 
 // Other initialization
 REASY.state = "stopped";
@@ -71,31 +74,78 @@ REASY.keyHandler = function () {
   REASY.state = "paused";
 
   // Deferred key handling
-  setTimeout(function (code) {
+  var evt = event;
+  setTimeout(function (evt) {
       var idx = REASY.nextIdx;
 
+      // Clear any pending Timeout
+      if (REASY.fullstopTmeout) {
+        clearTimeout(REASY.fullstopTmeout);
+        REASY.fullstopTmeout = 0;
+      }
+
       // Subtract 32 from keycode for alphabets
-      if (code == ("b".charCodeAt(0) - 32)) {
+      if (evt.keyCode == 57) {  // ( key
+        var i;
+        REASY.anchorIndex = 0; // Forget the anchor
+
+        // Backward until we see a full stop. However, we can only go back
+        // till the last full stop and not further. To work this around, the
+        // full stop scanned is ignored once if the user presses the key again
+        // within 2 seconds
+        for (i = idx; i > 0; i--) {
+          if (REASY.fullStop.test(REASY.words[i])) {
+            if (REASY.ignoreOneFullstop) {
+              REASY.ignoreOneFullstop = false;
+              continue;
+            }
+            i++;
+            REASY.ignoreOneFullstop = true;
+            REASY.fullstopTmeout = setTimeout(function () {
+                REASY.ignoreOneFullstop = false;
+                REASY.fullstopTmeout = 0;
+                }, 2000);
+            break;
+          }
+        }
+        REASY.nextIdx = i;
+
+      } else if (evt.keyCode == 48 && evt.shiftKey) { // ) key
+        var i;
+        REASY.anchorIndex = 0; // Forget the anchor
+        REASY.ignoreOneFullstop = false;
+
+        // Forward until we see a full stop
+        for (i = idx; i < REASY.words.length; i++)
+          if (REASY.fullStop.test(REASY.words[i])) {
+            i++;
+            break;
+          }
+        REASY.nextIdx = i;
+
+      } else if (evt.keyCode == ("b".charCodeAt(0) - 32)) {
         REASY.anchorIndex = idx; // Remember where we were
         // Backward proprotional to the WPM (TODO: option)
         idx -= 10;
         if (idx < 0)
           idx = 0;
         REASY.nextIdx = idx;
-      } else if (code == ("f".charCodeAt(0) - 32)) {
+
+      } else if (evt.keyCode == ("f".charCodeAt(0) - 32)) {
         REASY.anchorIndex = 0; // Forget the anchor
         // Forward (TODO: option)
         idx = parseInt(idx) + 10;
         if (idx > REASY.words.length)
           idx = REASY.words.length;
         REASY.nextIdx = idx;
-      } else if (code == "0".charCodeAt(0)) {
+
+      } else if (evt.keyCode == "0".charCodeAt(0)) {
         // Beginning
         REASY.nextIdx = 0;
       }
 
       // Pause/Resume
-      if (code == ("p".charCodeAt(0) - 32)) {
+      if (evt.keyCode == ("p".charCodeAt(0) - 32)) {
         if (!wasAlreadyPaused) {
           REASY.keystate = "";
           return;
@@ -107,7 +157,7 @@ REASY.keyHandler = function () {
       REASY.play();
       REASY.keystate = "";
       },
-    600, event.keyCode);
+    600, event);
 
   return false;
 };
