@@ -311,7 +311,12 @@ REASY.play = function () {
   }
 
   if (index < words.length) {
-    var word = words[index];
+    try {
+      var word = words[index];
+    } catch (e) {
+      REASY.log("Quit following exception");
+      REASY.hideStage();
+    }
 
     // Display content
     REASY.textArea.text(word);
