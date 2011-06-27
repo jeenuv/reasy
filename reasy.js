@@ -5,7 +5,9 @@ var REASY = window.REASY;
 
 // RegEx to detect punctuation pause
 REASY.debug = 1;
-REASY.punc = /[.,;:?!()-]/;
+// 0x2013 0x2014 are dashes
+// 0x2026 is ellipsis
+REASY.punc = /[\u2013\u2014\u2026.,;:?\/!()-]/;
 REASY.fullStop = /\.\s*$/;
 
 REASY.ignoreOneFullstop = false;
