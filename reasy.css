@@ -1,0 +1,52 @@
+
+/* Main stage */
+#reasy-stage {
+  position: fixed;
+  z-index: 10000;
+  display: block;
+  border-radius: 10px;
+  /* Remaining properties set according to option */
+}
+
+#reasy-stage input[type=button] {
+  margin: 5px 5px 0px 5px;
+  padding: 0px 2px 0px;
+  font-size: 12px;
+  background-color: white;
+  color: black;
+  border-style: none;
+}
+
+/* Close button */
+#reasy-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Title DIV */
+#reasy-title {
+  position: relative;
+  font-size: 12px;
+  margin: 0;
+  text-align: left;
+}
+
+/* Information display */
+#reasy-title span {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Outer div of display area */
+#reasy-text-container {
+  text-align: center;
+}
+
+/* Display area */
+#reasy-text {
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+/* vim:set tw=78 sw=2: */

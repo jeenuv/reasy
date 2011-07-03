@@ -10,6 +10,8 @@ REASY.punc = /[.,;:?!()-]/;
 REASY.state = "stopped";
 REASY.wpm = "450";
 REASY.nextTick = 0;
+REASY.contentHeight = "40";
+REASY.titleHeight = "30";
 
 // Print a log message
 REASY.log = function (message) {
@@ -83,23 +85,18 @@ REASY.prepareStage = function () {
     }
 
     // Create the stage
-    var stageH = 125;
     var stageW = 500;
     var stageX = window.innerWidth - stageW - 30;
     var stageY = 10;
 
     var stage = $("<div>")
-      .css( { "position": "fixed",
-              "left": stageX,
+      .css( { "left": stageX,
               "top": stageY,
               "width": stageW,
-              "height": stageH,
-              "color": "white",
+              "height": parseInt(REASY.contentHeight)
+                        + (REASY.titleHeight * 2) + "px",
               "background-color": "black",
-              "font-family": "sans-serif",
-              "z-index": "10000",
-              "display": "block",
-              "border-radius": "10px"
+              "font-family": "sans-serif"
           })
       .attr("id", "reasy-stage");
 
@@ -107,36 +104,33 @@ REASY.prepareStage = function () {
       .attr( { "type": "button",
                "value": " x "
              })
-      .css({ "position": "absolute",
-              "margin": "5px",
-              "right": "0",
-              "top": "0",
-            })
+      .attr("id", "reasy-close")
       .click(function () {
           REASY.hideStage();
           });
 
-    var titleDiv = $("<div>").css("height", "35px");
+    // The title div that houses close button, widgets and other text
+    // information
+    var titleDiv = $("<div>")
+      .attr("id", "reasy-title")
+      .css("height", REASY.titleHeight + "px");
+    // Button to reduce WPM
     var wpmDec = $("<input>")
       .attr( { "type": "button",
-               "value": " < "
+               "value": "<"
              })
-      .css( { "margin": "5px" })
       .click(function () {
           REASY.wpm = parseInt(REASY.wpm) - 20;
           REASY.wpmSpan.text(REASY.wpm);
           });
     var wpmSpan = $("<span>")
       .attr("id", "reasy-wpm")
-      .css( { "margin": "5px",
-              "font-weight": "bold"
-            })
+      .css("color", "white")
       .text(REASY.wpm);
     var wpmInc = $("<input>")
       .attr( { "type": "button",
-               "value": " > "
+               "value": ">"
              })
-      .css( { "margin": "0px 5px" })
       .click(function () {
           REASY.wpm = parseInt(REASY.wpm) + 20;
           REASY.wpmSpan.text(REASY.wpm);
@@ -146,25 +140,28 @@ REASY.prepareStage = function () {
       .append(wpmInc)
       .append(closeButton);
 
-    // Text area
-    var textArea = $("<div>")
+    // Text area, where we actually display content
+    var textContainer = $("<div>")
+      .attr("id", "reasy-text-container")
+      .css("height", parseInt(REASY.contentHeight) + 2 + "px");
+    var textArea = $("<span>")
       .attr("id", "reasy-text")
-      .css( { "text-align": "center",
-              "overflow": "hidden",
-              "font-size": "30pt"
-              })
+      .css("color", "white")
+      .css("font-size", REASY.contentHeight + "px")
+      .css("line-height", REASY.contentHeight + "px")
+      // Click means pause/resume
       .click(function () {
         if (REASY.state == "paused") {
           REASY.state = "running";
           REASY.play();
         } else
           REASY.state = "paused";
-        });
+        })
+      .appendTo(textContainer);
 
     stage.append(titleDiv)
-      .append(textArea);
-
-    stage.appendTo($("body"));
+      .append(textContainer)
+      .appendTo($("body"));
 
     REASY.textArea = textArea;
     REASY.stage = stage;
