@@ -14,7 +14,7 @@ REASY.nextTick = 0;
 REASY.contentHeight = "40";
 REASY.titleHeight = "30";
 
-// Print a log message
+// Print log message
 REASY.log = function (message) {
   if (REASY.debug)
     console.log("REASY <" + Date.now() + ">: " + message);
@@ -41,12 +41,14 @@ REASY.mouseHandler = function () {
 };
 
 
+// Key handler while Reasy is in session
 REASY.keyHandler = function () {
   event.stopImmediatePropagation();
   event.preventDefault();
   if (REASY.keystate == "handling")
     return;
 
+  // Quit
   if (event.keyCode == ("q".charCodeAt(0) - 32)) {
     REASY.hideStage();
     return false;
@@ -57,6 +59,8 @@ REASY.keyHandler = function () {
   // Signal to pause reading and wait until it's
   var wasAlreadyPaused = (REASY.state == "paused")
   REASY.state = "paused";
+
+  // Deferred key handling
   setTimeout(function (code) {
       var idx = REASY.nextIdx;
 
@@ -95,8 +99,9 @@ REASY.keyHandler = function () {
   return false;
 };
 
-// Insert necessary HTML items into the page so that we have a stage
-// to display the text
+
+// Insert necessary HTML items into the page so that we have a stage to
+// display the text
 REASY.prepareStage = function () {
   try {
     REASY.stage = $("#reasy-stage");
@@ -107,6 +112,7 @@ REASY.prepareStage = function () {
       REASY.wpmSpan.text(REASY.wpm);
       REASY.stage.css("display", "block");
 
+      // Register handlers
       $(document).keyup(REASY.keyHandler);
       return;
     }
@@ -116,6 +122,7 @@ REASY.prepareStage = function () {
     var stageX = window.innerWidth - stageW - 30;
     var stageY = 10;
 
+    // The grand main outer div
     var stage = $("<div>")
       .css( { "left": stageX,
               "top": stageY,
@@ -127,6 +134,7 @@ REASY.prepareStage = function () {
           })
       .attr("id", "reasy-stage");
 
+    // Close button
     var closeButton = $("<input>")
       .attr( { "type": "button",
                "value": " x "
@@ -150,10 +158,12 @@ REASY.prepareStage = function () {
           REASY.wpm = parseInt(REASY.wpm) - 20;
           REASY.wpmSpan.text(REASY.wpm);
           });
+    // Text displaying the current WPM
     var wpmSpan = $("<span>")
       .attr("id", "reasy-wpm")
       .css("color", "white")
       .text(REASY.wpm);
+    // Button to increase WPM
     var wpmInc = $("<input>")
       .attr( { "type": "button",
                "value": ">"
@@ -162,6 +172,7 @@ REASY.prepareStage = function () {
           REASY.wpm = parseInt(REASY.wpm) + 20;
           REASY.wpmSpan.text(REASY.wpm);
           });
+    // Stitch it all together
     titleDiv.append(wpmDec)
       .append(wpmSpan)
       .append(wpmInc)
@@ -186,6 +197,7 @@ REASY.prepareStage = function () {
         })
       .appendTo(textContainer);
 
+    // Final stitch
     stage.append(titleDiv)
       .append(textContainer)
       .appendTo($("body"));
@@ -194,6 +206,7 @@ REASY.prepareStage = function () {
     REASY.stage = stage;
     REASY.wpmSpan = wpmSpan;
 
+    // We're in session. Register handlers
     $(document).keyup(REASY.keyHandler);
   } catch (e) {
     REASY.log(e);
@@ -202,8 +215,9 @@ REASY.prepareStage = function () {
 };
 
 
-// Hides the stage
+// End of reading session
 REASY.hideStage = function () {
+  // Hide stage
   if (REASY.stage != null)
     REASY.stage.css("display", "none");
   REASY.state = "stopped";
@@ -214,6 +228,7 @@ REASY.hideStage = function () {
 };
 
 
+// Continuously display content
 REASY.play = function () {
   var words = REASY.words;
   var index = REASY.nextIdx;
@@ -223,7 +238,8 @@ REASY.play = function () {
     return;
 
   // It appears that if key events continue coming in, the setTimeout function
-  // returns quite early than expected. This is a workaround for that
+  // returns quite early than expected. This is a workaround for Reasy to keep
+  // cool in such violent times
   var now = Date.now();
   if (REASY.nextTick > 0 && REASY.nextTick > now) {
     setTimeout(REASY.play, REASY.nextTick - now);
@@ -232,20 +248,27 @@ REASY.play = function () {
 
   if (index < words.length) {
     var word = words[index];
+
+    // Display content
     REASY.textArea.text(word);
+
+    // Calculate the delay before next update
+    // TODO: factor in length of the word
     if (REASY.punc.test(word) == true)
       delay = 650;
     else
       delay = 60000 / REASY.wpm;
     REASY.nextIdx++;
 
-    // Schedule read for next word
+    // Schedule read for updation
     REASY.nextTick = Date.now() + delay;
     setTimeout(REASY.play, delay);
   } else
     REASY.hideStage();
 };
 
+
+// Main entry function
 REASY.run = function () {
   REASY.state = "running";
 
@@ -260,9 +283,11 @@ REASY.run = function () {
     return;
   }
 
+  // Content that we're to read
   REASY.words = selection.split(/\s+/);
   REASY.nextIdx = 0;
 
+  // Prepare the stage and fire off!
   REASY.prepareStage();
   REASY.play();
 };
@@ -272,4 +297,4 @@ REASY.run = function () {
 $(document).mouseup(REASY.mouseHandler);
 REASY.log("Reasy ready");
 
-// vim:sw=2:
+// vim:sw=2 tw=78:
