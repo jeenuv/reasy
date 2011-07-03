@@ -3,6 +3,9 @@
 window.REASY = {};
 var REASY = window.REASY;
 
+// Some websites will disable text selection
+document.onselectstart = null;
+
 // RegEx to detect punctuation pause
 REASY.debug = 1;
 // 0x2013 0x2014 are dashes
