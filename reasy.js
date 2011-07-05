@@ -130,7 +130,7 @@ REASY.keyHandler = function () {
 
       } else if (evt.keyCode == ("b".charCodeAt(0) - 32)) {
         REASY.anchorIndex = idx; // Remember where we were
-        // Backward proprotional to the WPM (TODO: option)
+        // Backward (TODO: option)
         idx -= 10;
         if (idx < 0)
           idx = 0;
@@ -147,6 +147,8 @@ REASY.keyHandler = function () {
       } else if (evt.keyCode == "0".charCodeAt(0)) {
         // Beginning
         REASY.nextIdx = 0;
+        // Forget the anchor
+        REASY.anchorIndex = 0;
       }
 
       // Pause/Resume
