@@ -16,11 +16,13 @@ REASY.fullStop = /\.\s*$/;
 REASY.ignoreOneFullstop = false;
 
 // Other initialization
+// TODO: option
 REASY.state = "stopped";
 REASY.wpm = "450";
 REASY.nextTick = 0;
 REASY.contentHeight = "40";
 REASY.titleHeight = "30";
+
 
 // Print log message
 REASY.log = function (message) {
@@ -38,6 +40,12 @@ REASY.launchHandler = function () {
     REASY.run();
 };
 
+// Update WPM and refresh title text
+REASY.updateWPM = function (adjust) {
+  if (adjust)
+    REASY.wpm = parseInt(REASY.wpm) + adjust;
+  REASY.wpmSpan.text(REASY.wpm);
+};
 
 // Mouse handler acting as a watchdog to user's text selection
 REASY.mouseHandler = function () {
@@ -62,13 +70,11 @@ REASY.keyHandler = function () {
     return false;
   } else if (event.keyCode == 187) { // +
     // Increase WPM
-    REASY.wpm = parseInt(REASY.wpm) + 10;
-    REASY.wpmSpan.text(REASY.wpm);
+    REASY.updateWPM(10);
     return false;
   } else if (event.keyCode == 189) {  // -
     // Decrease WPM
-    REASY.wpm = parseInt(REASY.wpm) - 10;
-    REASY.wpmSpan.text(REASY.wpm);
+    REASY.updateWPM(-10);
     return false;
   }
 
@@ -179,7 +185,7 @@ REASY.prepareStage = function () {
       // The page already has the stage. Initialize fields and make it visible
       REASY.textArea = $("#reasy-text");
       REASY.wpmSpan = $("#reasy-wpm");
-      REASY.wpmSpan.text(REASY.wpm);
+      REASY.updateWPM();
       REASY.stage.css("display", "block");
 
       // Register handlers
@@ -225,22 +231,21 @@ REASY.prepareStage = function () {
                "value": "<"
              })
       .click(function () {
-          REASY.wpm = parseInt(REASY.wpm) - 20;
-          REASY.wpmSpan.text(REASY.wpm);
+          // TODO: option
+          REASY.updateWPM(-10);
           });
     // Text displaying the current WPM
     var wpmSpan = $("<span>")
       .attr("id", "reasy-wpm")
-      .css("color", "white")
-      .text(REASY.wpm);
+      .css("color", "white");
     // Button to increase WPM
     var wpmInc = $("<input>")
       .attr( { "type": "button",
                "value": ">"
              })
       .click(function () {
-          REASY.wpm = parseInt(REASY.wpm) + 20;
-          REASY.wpmSpan.text(REASY.wpm);
+          // TODO: option
+          REASY.updateWPM(10);
           });
     // Stitch it all together
     titleDiv.append(wpmDec)
@@ -275,6 +280,8 @@ REASY.prepareStage = function () {
     REASY.textArea = textArea;
     REASY.stage = stage;
     REASY.wpmSpan = wpmSpan;
+
+    REASY.updateWPM();
 
     // We're in session. Register handlers
     $(document).keyup(REASY.keyHandler);
