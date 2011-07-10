@@ -6,8 +6,10 @@ var REASY = window.REASY;
 // Some websites will disable text selection
 document.onselectstart = null;
 
-// RegEx to detect punctuation pause
+// TODO: option
 REASY.debug = 1;
+
+// RegEx to detect punctuation pause
 // 0x2013 0x2014 are dashes
 // 0x2026 is ellipsis
 REASY.punc = /[\u2013\u2014\u2026.,;:?\/!()-]/;
@@ -34,18 +36,25 @@ REASY.log = function (message) {
 // To summon Reasy via. keyboard shortcut
 REASY.launchHandler = function () {
   // TODO: option
+  REASY.log("launchHandler: lauching Reasy");
   if (event.keyCode == ("r".charCodeAt(0) - 32)
       && event.shiftKey
       && REASY.state == "stopped")
     REASY.run();
 };
 
+
 // Update WPM and refresh title text
 REASY.updateWPM = function (adjust) {
+  var oldWpm = REASY.wpm;
+  REASY.log("updateWPM: current WPM: " + oldWpm);
   if (adjust)
     REASY.wpm = parseInt(REASY.wpm) + adjust;
+  if (REASY.wpm != oldWpm)
+    REASY.log("updateWPM: adjusted WPM" + REASY.wpm);
   REASY.wpmSpan.text(REASY.wpm);
 };
+
 
 // Mouse handler acting as a watchdog to user's text selection
 REASY.mouseHandler = function () {
@@ -61,19 +70,24 @@ REASY.mouseHandler = function () {
 REASY.keyHandler = function () {
   event.stopImmediatePropagation();
   event.preventDefault();
-  if (REASY.keystate == "handling")
+  if (REASY.keystate == "handling") {
+    REASY.log("keyHandler: already handling");
     return;
+  }
 
   if (event.keyCode == ("q".charCodeAt(0) - 32)) {
     // Quit
+    REASY.log("keyHandler: quit");
     REASY.hideStage();
     return false;
   } else if (event.keyCode == 187) { // +
     // Increase WPM
+    REASY.log("keyHandler: increase WPM");
     REASY.updateWPM(10);
     return false;
   } else if (event.keyCode == 189) {  // -
     // Decrease WPM
+    REASY.log("keyHandler: decrease WPM");
     REASY.updateWPM(-10);
     return false;
   }
@@ -91,12 +105,14 @@ REASY.keyHandler = function () {
 
       // Clear any pending Timeout
       if (REASY.fullstopTmeout) {
+        REASY.log("keyHandler: clear fullstop timeout");
         clearTimeout(REASY.fullstopTmeout);
         REASY.fullstopTmeout = 0;
       }
 
       // Subtract 32 from keycode for alphabets
       if (evt.keyCode == 57) {  // ( key
+        REASY.log("keyHandler: backward sentence");
         var i;
         REASY.anchorIndex = 0; // Forget the anchor
 
@@ -106,6 +122,7 @@ REASY.keyHandler = function () {
         // within 2 seconds
         for (i = idx; i > 0; i--) {
           if (REASY.fullStop.test(REASY.words[i])) {
+            REASY.log("keyHandler: ignore full stop at idx " + i);
             if (REASY.ignoreOneFullstop) {
               REASY.ignoreOneFullstop = false;
               continue;
@@ -113,15 +130,19 @@ REASY.keyHandler = function () {
             i++;
             REASY.ignoreOneFullstop = true;
             REASY.fullstopTmeout = setTimeout(function () {
+                REASY.log("keyHandler: trigger fullstop timeout");
                 REASY.ignoreOneFullstop = false;
                 REASY.fullstopTmeout = 0;
+                // TODO: option
                 }, 2000);
             break;
           }
         }
+        REASY.log("keyHandler: nextIdx is " + i);
         REASY.nextIdx = i;
 
       } else if (evt.keyCode == 48 && evt.shiftKey) { // ) key
+        REASY.log("keyHandler: forward sentence");
         var i;
         REASY.anchorIndex = 0; // Forget the anchor
         REASY.ignoreOneFullstop = false;
@@ -132,6 +153,7 @@ REASY.keyHandler = function () {
             i++;
             break;
           }
+        REASY.log("keyHandler: nextIdx is " + i);
         REASY.nextIdx = i;
 
       } else if (evt.keyCode == ("b".charCodeAt(0) - 32)) {
@@ -141,6 +163,7 @@ REASY.keyHandler = function () {
         if (idx < 0)
           idx = 0;
         REASY.nextIdx = idx;
+        REASY.log("keyHandler: backward " + 10);
 
       } else if (evt.keyCode == ("f".charCodeAt(0) - 32)) {
         REASY.anchorIndex = 0; // Forget the anchor
@@ -149,9 +172,11 @@ REASY.keyHandler = function () {
         if (idx > REASY.words.length)
           idx = REASY.words.length;
         REASY.nextIdx = idx;
+        REASY.log("keyHandler: forward " + 10);
 
       } else if (evt.keyCode == "0".charCodeAt(0)) {
         // Beginning
+        REASY.log("keyHandler: read from beginning");
         REASY.nextIdx = 0;
         // Forget the anchor
         REASY.anchorIndex = 0;
@@ -161,8 +186,10 @@ REASY.keyHandler = function () {
       if (evt.keyCode == ("p".charCodeAt(0) - 32)) {
         if (!wasAlreadyPaused) {
           REASY.keystate = "";
+          REASY.log("keyHandler: paused");
           return;
-        }
+        } else
+          REASY.log("keyHandler: resume");
       }
 
       // Space to stop
@@ -170,6 +197,7 @@ REASY.keyHandler = function () {
       REASY.play();
       REASY.keystate = "";
       },
+      // TODO: option
     600, event);
 
   return false;
@@ -182,6 +210,7 @@ REASY.prepareStage = function () {
   try {
     REASY.stage = $("#reasy-stage");
     if (REASY.stage.length != 0) {
+      REASY.log("prepareStage: reuse stage");
       // The page already has the stage. Initialize fields and make it visible
       REASY.textArea = $("#reasy-text");
       REASY.wpmSpan = $("#reasy-wpm");
@@ -285,6 +314,7 @@ REASY.prepareStage = function () {
 
     // We're in session. Register handlers
     $(document).keyup(REASY.keyHandler);
+    REASY.log("prepareStage: created stage");
   } catch (e) {
     REASY.log(e);
     REASY.stage = null;
@@ -303,6 +333,7 @@ REASY.hideStage = function () {
   $(document).unbind("keyup", REASY.keyHandler);
   $(document).unbind("keyup", REASY.launchHandler)
     .keyup(REASY.launchHandler);
+  REASY.log("hideStage: stage hidden");
 };
 
 
@@ -312,8 +343,10 @@ REASY.play = function () {
   var index = REASY.nextIdx;
   var delay;
 
-  if (REASY.state != "running")
+  if (REASY.state != "running") {
+    REASY.log("play: state is not 'running'");
     return;
+  }
 
   // It appears that if key events continue coming in, the setTimeout function
   // returns quite early than expected. This is a workaround for Reasy to keep
@@ -328,7 +361,7 @@ REASY.play = function () {
     try {
       var word = words[index];
     } catch (e) {
-      REASY.log("Quit following exception");
+      REASY.log("play: quit following exception");
       REASY.hideStage();
     }
 
@@ -380,6 +413,7 @@ REASY.run = function () {
   REASY.prepareStage();
   REASY.play();
 };
+
 
 // Register mouse handler permanently so that Reasy can be
 // summoned using the designated short cut
