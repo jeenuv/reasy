@@ -18,9 +18,12 @@ REASY.fullStop = /\.\s*$/;
 REASY.ignoreOneFullstop = false;
 
 // Other initialization
-// TODO: option
+// TODO: options
 REASY.state = "stopped";
 REASY.wpm = "450";
+REASY.drift = 0;
+// Drift tolerance at 5% of WPM
+REASY.driftTolerance = (REASY.wpm * 5) / 100;
 REASY.nextTick = 0;
 REASY.contentHeight = "40";
 REASY.titleHeight = "30";
@@ -352,9 +355,15 @@ REASY.play = function () {
   // returns quite early than expected. This is a workaround for Reasy to keep
   // cool in such violent times
   var now = Date.now();
-  if (REASY.nextTick > 0 && REASY.nextTick > now) {
-    setTimeout(REASY.play, REASY.nextTick - now);
-    return;
+  if (REASY.nextTick > 0 && now < REASY.nextTick) {
+    // Tolerate until the cumulative deviance reaches tolerance
+    REASY.drift += parseInt(REASY.nextTick - now);
+    if (REASY.drift > REASY.driftTolerance) {
+      REASY.log("play: adjusting timeout to " + REASY.drift);
+      REASY.drift = 0;
+      setTimeout(REASY.play, REASY.drift);
+      return;
+    }
   }
 
   if (index < words.length) {
