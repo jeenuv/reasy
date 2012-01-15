@@ -24,12 +24,38 @@ function reasyContextMenuClicked(info, tab) {
 
 // Create a context menu
 var menuProperties = {
+  "type": "normal",
   "title": "Reasy",
   "contexts": [ "selection" ],
   "onclick": reasyContextMenuClicked
 };
 chrome.contextMenus.create(menuProperties);
 
+// Register a request handler so that context menu can load/save options
+function rwOption(request, sender, sendResponse)
+{
+  var tmp = {};
+
+  switch (request.header) {
+    case "options.read":
+      tmp = JSON.parse(localStorage.getItem("options"));
+      break;
+
+    case "options.write":
+      if (request.payload)
+        localStorage.setItem("options", JSON.stringify(request.payload));
+      else
+        alert("No payload to write");
+      break;
+
+    default:
+      REASY.log("Unknown request header: " +  request.header);
+      break;
+  }
+
+  sendResponse(tmp);
+}
+chrome.extension.onRequest.addListener(rwOption);
 
 // Write the default options to local storage
 if (!localStorage.getItem("options"))

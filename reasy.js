@@ -3,35 +3,9 @@
 window.REASY = {};
 var REASY = window.REASY;
 
-// Some websites will disable text selection
-document.onselectstart = null;
-
-// TODO: option
-REASY.debug = 1;
-
-// RegEx to detect punctuation pause
-// 0x2013 0x2014 are dashes
-// 0x2026 is ellipsis
-REASY.punc = /[\u2013\u2014\u2026.,;:?\/!()-]/;
-REASY.fullStop = /\.\s*$/;
-
-REASY.ignoreOneFullstop = false;
-
-// Other initialization
-// TODO: options
-REASY.state = "stopped";
-REASY.wpm = "450";
-REASY.drift = 0;
-// Drift tolerance at 5% of WPM
-REASY.driftTolerance = (REASY.wpm * 5) / 100;
-REASY.nextTick = 0;
-REASY.contentHeight = "40";
-REASY.titleHeight = "30";
-
-
 // Print log message
 REASY.log = function (message) {
-  if (REASY.debug)
+  if (REASY.options.debug)
     console.log("REASY <" + Date.now() + ">: " + message);
 };
 
@@ -49,13 +23,11 @@ REASY.launchHandler = function () {
 
 // Update WPM and refresh title text
 REASY.updateWPM = function (adjust) {
-  var oldWpm = REASY.wpm;
-  REASY.log("updateWPM: current WPM: " + oldWpm);
-  if (adjust)
-    REASY.wpm = parseInt(REASY.wpm) + adjust;
-  if (REASY.wpm != oldWpm)
-    REASY.log("updateWPM: adjusted WPM" + REASY.wpm);
-  REASY.wpmSpan.text(REASY.wpm);
+  if (adjust) {
+    REASY.options.wpm = parseInt(REASY.options.wpm) + adjust;
+    REASY.log("updateWPM: Updated WPM: " + REASY.options.wpm);
+  }
+  REASY.wpmSpan.text(REASY.options.wpm);
 };
 
 
@@ -235,7 +207,7 @@ REASY.prepareStage = function () {
       .css( { "left": stageX,
               "top": stageY,
               "width": stageW,
-              "height": parseInt(REASY.contentHeight)
+              "height": parseInt(REASY.options.fontSize)
                         + (REASY.titleHeight * 2) + "px",
               "background-color": "black",
               "font-family": "sans-serif"
@@ -288,12 +260,12 @@ REASY.prepareStage = function () {
     // Text area, where we actually display content
     var textContainer = $("<div>")
       .attr("id", "reasy-text-container")
-      .css("height", parseInt(REASY.contentHeight) + 2 + "px");
+      .css("height", parseInt(REASY.options.fontSize) + 2 + "px");
     var textArea = $("<span>")
       .attr("id", "reasy-text")
       .css("color", "white")
-      .css("font-size", REASY.contentHeight + "px")
-      .css("line-height", REASY.contentHeight + "px")
+      .css("font-size", REASY.options.fontSize + "px")
+      .css("line-height", REASY.options.fontSize + "px")
       // Click means pause/resume
       .click(function () {
         if (REASY.state == "paused") {
@@ -382,7 +354,7 @@ REASY.play = function () {
     if (REASY.punc.test(word) == true)
       delay = 650;
     else {
-      delay = 60000 / REASY.wpm;
+      delay = 60000 / REASY.options.wpm;
       // Go slow until we reach back where user pressed back, presumably for
       // re-reading that part of text
       if (REASY.anchorIndex > 0 && REASY.anchorIndex >= index)
@@ -424,9 +396,37 @@ REASY.run = function () {
 };
 
 
-// Register mouse handler permanently so that Reasy can be
-// summoned using the designated short cut
-$(document).mouseup(REASY.mouseHandler);
-REASY.log("Reasy ready");
+// Initialize REASY
+REASY.init = function (options) {
+  REASY.options = options;
+  REASY.log("Reasy initializing");
+
+  // Some websites will disable text selection
+  document.onselectstart = null;
+
+  // RegEx to detect punctuation pause
+  // 0x2013 0x2014 are dashes
+  // 0x2026 is ellipsis
+  REASY.punc = /[\u2013\u2014\u2026.,;:?\/!()-]/;
+  REASY.fullStop = /\.\s*$/;
+
+  REASY.ignoreOneFullstop = false;
+
+  // Other initialization
+  REASY.state = "stopped";
+  REASY.drift = 0;
+  // Height of stage title
+  REASY.titleHeight = 30;
+  // Drift tolerance at 5% of WPM
+  REASY.driftTolerance = (REASY.options.wpm * 5) / 100;
+  REASY.nextTick = 0;
+
+  // Register mouse handler permanently so that Reasy can be
+  // summoned using the designated short cut
+  $(document).mouseup(REASY.mouseHandler);
+  REASY.log("Reasy ready");
+};
+
+chrome.extension.sendRequest({ "header": "options.read" }, REASY.init);
 
 // vim:sw=2 tw=78:
