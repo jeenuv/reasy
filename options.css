@@ -1,0 +1,53 @@
+
+body {
+  font-family: sans-serif;
+  font-size: 90%;
+}
+
+#mainDiv {
+  position: relative;
+  width: 400px;
+  margin: 70px auto 70px;
+  border: 1px solid;
+  padding: 10px 30px 40px;
+  background-color: #dddddd;
+  -webkit-border-radius: 8px;
+}
+
+#mainDiv h2 {
+  text-align: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid;
+}
+
+#buttonDiv {
+  clear: left;
+  border-top: 1px solid;
+  padding-top: 10px;
+}
+
+div.optionRow {
+  display: block;
+  clear: left;
+}
+
+div.optionDesc {
+  float: left;
+  width: 250px;
+  padding-top: 5px;
+  margin-bottom: 10px;
+}
+
+div.optionContent {
+  float: left;
+}
+
+input[type="checkbox"] {
+  margin-top: 8px;
+}
+
+input[type="text"] {
+  width: 40px;
+}
+
+/* vim:set sw=2: */

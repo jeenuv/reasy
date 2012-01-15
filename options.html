@@ -1,6 +1,132 @@
 <html>
-    <head>
-    </head>
-    <body>
-    </body>
+  <head>
+    <link href="options.css" rel="stylesheet" />
+    <script src="jquery-1.7.1.min.js"></script>
+    <script src="options.js"></script>
+  </head>
+  <body>
+    <div id="mainDiv">
+      <h2>Reasy Options</h2>
+      <div id="optionsDiv">
+        <!-- Words per minute -->
+        <div class="optionRow">
+          <div class="optionDesc">Words per minute</div>
+          <div class="optionContent">
+            <input id="wpm" type="text" />
+          </div>
+        </div>
+
+        <!-- Key to launch Reasy -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to launch Reasy</div>
+          <div class="optionContent">
+            <input id="launchKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to pause Reasy -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to pause Reasy</div>
+          <div class="optionContent">
+            <input id="pauseKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to quit Reasy -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to quit Reasy</div>
+          <div class="optionContent">
+            <input id="quitKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to increase WPM -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to increase WPM</div>
+          <div class="optionContent">
+            <input id="wpmInc" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to decrease WPM -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to decrease WPM</div>
+          <div class="optionContent">
+            <input id="wpmDec" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to read from beginning -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to read from beginning</div>
+          <div class="optionContent">
+            <input id="beginningKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to skip backward words -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to skip backward words</div>
+          <div class="optionContent">
+            <input id="wbKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to skip forward words -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to skip forward words</div>
+          <div class="optionContent">
+            <input id="wfKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Number of words to skip -->
+        <div class="optionRow">
+          <div class="optionDesc">Number of words to skip </div>
+          <div class="optionContent">
+            <input id="nWords" type="text" />
+          </div>
+        </div>
+
+        <!-- Key to skip backward sentence -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to skip backward sentence</div>
+          <div class="optionContent">
+            <input id="sbKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Key to skip forward -->
+        <div class="optionRow">
+          <div class="optionDesc">Key to skip forward sentence</div>
+          <div class="optionContent">
+            <input id="sfKey" type="text" maxlength="1" />
+          </div>
+        </div>
+
+        <!-- Debug logs -->
+        <div class="optionRow">
+          <div class="optionDesc">Enable debug logs</div>
+          <div class="optionContent">
+            <input id="debug" type="checkbox" />
+          </div>
+        </div>
+
+        <!-- Read slow on skip-->
+        <div class="optionRow">
+          <div class="optionDesc">Read slow on skip</div>
+          <div class="optionContent">
+            <input id="sos" type="checkbox" />
+        </div>
+      </div>
+
+      <!-- Save button -->
+      <div id="buttonDiv">
+        <input id="saveButton" type="button" value="Save" />
+        <input id="resetButton" type="button" value="Reset" />
+      </div>
+    </div>
+  </body>
 </html>
+
+<!-- vim:set sw=2: -->
