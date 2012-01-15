@@ -13,7 +13,7 @@
   "content_scripts" : [ {
       "matches": [ "<all_urls>", "file:///*/*" ],
       "css": [ "reasy.css" ],
-      "js": [ "jquery-1.6.1.min.js", "reasy.js" ],
+      "js": [ "jquery-1.7.1.min.js", "reasy.js" ],
       "run_at": "document_end"
       } ],
   "icons": {
