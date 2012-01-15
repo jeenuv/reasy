@@ -17,6 +17,10 @@ var defaultOptions = {
   "sos": 1,
 };
 
+function writeDefault() {
+  localStorage.setItem("options", JSON.stringify(defaultOptions));
+}
+
 // Function to run when context menu is clicked
 function reasyContextMenuClicked(info, tab) {
   chrome.tabs.executeScript(null, { file: "reasy-launch.js" });
@@ -41,6 +45,10 @@ function rwOption(request, sender, sendResponse)
       tmp = JSON.parse(localStorage.getItem("options"));
       break;
 
+    case "options.setdefault":
+      writeDefault();
+      break;
+
     case "options.write":
       if (request.payload)
         localStorage.setItem("options", JSON.stringify(request.payload));
@@ -59,7 +67,7 @@ chrome.extension.onRequest.addListener(rwOption);
 
 // Write the default options to local storage
 if (!localStorage.getItem("options"))
-  localStorage.setItem("options", JSON.stringify(defaultOptions));
+  writeDefault();
 
 
 // vim:sw=2 tw=78:

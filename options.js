@@ -75,8 +75,10 @@ $(document).ready(function () {
     loadOptions();
     $("#saveButton").click(saveOptions);
     $("#resetButton").click(function () {
-      localStorage.removeItem("options");
-      loadOptions();
+      chrome.extension.sendRequest({ "header": "options.setdefault" },
+        function () {
+          loadOptions();
+        });
       });
   });
 
