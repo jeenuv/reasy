@@ -11,32 +11,15 @@ function highlightError(item) {
 };
 
 function loadOptions() {
-  var save = false;
-  var defaultOptions = {
-    "wpm": 300,
-    "launchKey": "R",
-    "pauseKey": "p",
-    "quitKey": "q",
-    "wpmInc": "+",
-    "wpmDec": "-",
-    "beginningKey": "0",
-    "wbKey": "b",
-    "wfKey": "f",
-    "nWords": "10",
-    "sbKey": "(",
-    "sfKey": ")",
-    "debug": 0,
-    "sos": 1,
-  };
   var options;
   var tmp;
 
   tmp = localStorage.getItem("options");
   if (!tmp) {
-    options = defaultOptions;
-    save = true;
-  } else
-    options = JSON.parse(tmp);
+    alert("No options configured");
+    return;
+  }
+  options = JSON.parse(tmp);
 
   $(":input").each(function () {
       var id = $(this).attr("id");
@@ -48,8 +31,6 @@ function loadOptions() {
         if (options[id] == 1)
           $(this).attr("checked", "checked");
     });
-  if (save)
-    saveOptions();
 }
 
 
