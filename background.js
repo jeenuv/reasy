@@ -1,6 +1,7 @@
 
 var defaultOptions = {
-  "wpm": 300,
+  "wpm": 350,
+  "puncPause": 650,
   "fontSize": 40,
   "launchKey": "R",
   "pauseKey": "p",

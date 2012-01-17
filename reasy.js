@@ -266,6 +266,7 @@ REASY.hideStage = function () {
   REASY.state = "stopped";
   REASY.textArea.text("");
   REASY.anchorIndex = 0;
+  REASY.drift = 0;
   $(document).unbind("keyup", REASY.keyHandler);
   $(document).unbind("keyup", REASY.launchHandler)
     .keyup(REASY.launchHandler);
@@ -313,7 +314,7 @@ REASY.play = function () {
     // Calculate the delay before next update
     // TODO: factor in length of the word
     if (REASY.punc.test(word) == true)
-      delay = 650;
+      delay = parseInt(REASY.options.puncPause);
     else {
       delay = 60000 / REASY.options.wpm;
       // Go slow until we reach back where user pressed back, presumably for
