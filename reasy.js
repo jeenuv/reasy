@@ -182,18 +182,19 @@ REASY.keyHandler = function () {
 // Insert necessary HTML items into the page so that we have a stage to
 // display the text
 REASY.prepareStage = function () {
+  function initStage() {
+    REASY.updateWPM();
+    REASY.stage.css("display", "block");
+    // Register handlers
+    $(document).keyup(REASY.keyHandler);
+  }
+
   try {
     REASY.stage = $("#reasy-stage");
     if (REASY.stage.length != 0) {
       REASY.log("prepareStage: reuse stage");
       // The page already has the stage. Initialize fields and make it visible
-      REASY.textArea = $("#reasy-text");
-      REASY.wpmSpan = $("#reasy-wpm");
-      REASY.updateWPM();
-      REASY.stage.css("display", "block");
-
-      // Register handlers
-      $(document).keyup(REASY.keyHandler);
+      initStage();
       return;
     }
 
@@ -202,8 +203,12 @@ REASY.prepareStage = function () {
     var stageX = window.innerWidth - stageW - 30;
     var stageY = 10;
 
+    // Load stage from template
+    $.ajaxSetup({ async: false });
+    var url = chrome.extension.getURL("reasy-stage.html");
+
     // The grand main outer div
-    var stage = $("<div>")
+    REASY.stage = $("<div>")
       .css( { "left": stageX,
               "top": stageY,
               "width": stageW,
@@ -212,83 +217,39 @@ REASY.prepareStage = function () {
               "background-color": "black",
               "font-family": "sans-serif"
           })
-      .attr("id", "reasy-stage");
+      .attr("id", "reasy-stage")
+      .load(url)
+      .appendTo($("body"));
 
-    // Close button
-    var closeButton = $("<input>")
-      .attr( { "type": "button",
-               "value": " x "
-             })
-      .attr("id", "reasy-close")
-      .click(function () {
-          REASY.hideStage();
-          });
+    $("#reasy-text-container")
+      .css("height", parseInt(REASY.options.fontSize) + 5 + "px");
 
-    // The title div that houses close button, widgets and other text
-    // information
-    var titleDiv = $("<div>")
-      .attr("id", "reasy-title")
-      .css("height", REASY.titleHeight + "px");
-    // Button to reduce WPM
-    var wpmDec = $("<input>")
-      .attr( { "type": "button",
-               "value": "<"
-             })
-      .click(function () {
-          // TODO: option
-          REASY.updateWPM(-10);
-          });
-    // Text displaying the current WPM
-    var wpmSpan = $("<span>")
-      .attr("id", "reasy-wpm")
-      .css("color", "white");
-    // Button to increase WPM
-    var wpmInc = $("<input>")
-      .attr( { "type": "button",
-               "value": ">"
-             })
-      .click(function () {
-          // TODO: option
-          REASY.updateWPM(10);
-          });
-    // Stitch it all together
-    titleDiv.append(wpmDec)
-      .append(wpmSpan)
-      .append(wpmInc)
-      .append(closeButton);
-
-    // Text area, where we actually display content
-    var textContainer = $("<div>")
-      .attr("id", "reasy-text-container")
-      .css("height", parseInt(REASY.options.fontSize) + 2 + "px");
-    var textArea = $("<span>")
-      .attr("id", "reasy-text")
-      .css("color", "white")
+    // Text area
+    REASY.textArea = $("#reasy-text")
       .css("font-size", REASY.options.fontSize + "px")
-      .css("line-height", REASY.options.fontSize + "px")
-      // Click means pause/resume
-      .click(function () {
+      .css("line-height", REASY.options.fontSize + "px");
+
+    // WPM
+    REASY.wpmSpan = $("#reasy-wpm");
+
+    // Click handlers
+    $("#reasy-close").click(REASY.hideStage);
+    $("#reasy-wpm-inc").click(function () {
+        REASY.updateWPM(10);
+        });
+    $("#reasy-wpm-dec").click(function () {
+        REASY.updateWPM(-10);
+        });
+    // Click means pause/resume
+    REASY.textArea.click(function () {
         if (REASY.state == "paused") {
           REASY.state = "running";
           REASY.play();
         } else
           REASY.state = "paused";
-        })
-      .appendTo(textContainer);
+        });
 
-    // Final stitch
-    stage.append(titleDiv)
-      .append(textContainer)
-      .appendTo($("body"));
-
-    REASY.textArea = textArea;
-    REASY.stage = stage;
-    REASY.wpmSpan = wpmSpan;
-
-    REASY.updateWPM();
-
-    // We're in session. Register handlers
-    $(document).keyup(REASY.keyHandler);
+    initStage();
     REASY.log("prepareStage: created stage");
   } catch (e) {
     REASY.log(e);
