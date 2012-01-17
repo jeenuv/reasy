@@ -266,7 +266,6 @@ REASY.hideStage = function () {
   REASY.state = "stopped";
   REASY.textArea.text("");
   REASY.anchorIndex = 0;
-  REASY.drift = 0;
   $(document).unbind("keyup", REASY.keyHandler);
   $(document).unbind("keyup", REASY.launchHandler)
     .keyup(REASY.launchHandler);
@@ -288,14 +287,13 @@ REASY.play = function () {
   // It appears that if key events continue coming in, the setTimeout function
   // returns quite early than expected. This is a workaround for Reasy to keep
   // cool in such violent times
-  var now = Date.now();
+  var now = parseInt(Date.now());
   if (REASY.nextTick > 0 && now < REASY.nextTick) {
     // Tolerate until the cumulative deviance reaches tolerance
-    REASY.drift += parseInt(REASY.nextTick - now);
-    if (REASY.drift > REASY.driftTolerance) {
-      REASY.log("play: adjusting timeout to " + REASY.drift);
-      REASY.drift = 0;
-      setTimeout(REASY.play, REASY.drift);
+    var drift = parseInt(REASY.nextTick - now);
+    if (drift > 0 && drift > REASY.driftTolerance) {
+      REASY.log("play: adjusting timeout to " + drift);
+      setTimeout(REASY.play, drift);
       return;
     }
   }
@@ -326,7 +324,7 @@ REASY.play = function () {
     REASY.nextIdx++;
 
     // Schedule read for updation
-    REASY.nextTick = Date.now() + delay;
+    REASY.nextTick = parseInt(Date.now() + delay);
     setTimeout(REASY.play, delay);
   } else
     REASY.hideStage();
@@ -376,7 +374,6 @@ REASY.init = function (options) {
 
   // Other initialization
   REASY.state = "stopped";
-  REASY.drift = 0;
   // Height of stage title
   REASY.titleHeight = 30;
   // Drift tolerance at 5% of WPM
