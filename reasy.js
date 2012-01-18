@@ -311,8 +311,9 @@ REASY.play = function () {
 
     // Calculate the delay before next update
     // TODO: factor in length of the word
-    if (REASY.punc.test(word) == true)
-      delay = parseInt(REASY.options.puncPause);
+    var pp = parseInt(REASY.options.puncPause);
+    if (REASY.punc.test(word) == true && pp > 0)
+      delay = pp;
     else {
       delay = 60000 / REASY.options.wpm;
       // Go slow until we reach back where user pressed back, presumably for

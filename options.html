@@ -10,7 +10,13 @@
       <div id="optionsDiv">
         <!-- Words per minute -->
         <div class="optionRow">
-          <div class="optionDesc">Words per minute</div>
+          <div class="optionDesc">
+            Words per minute <br />
+            <span>
+              Higher the value, faster the words appear on the screen. Start with a lower value
+              and them proceed up
+            </span>
+          </div>
           <div class="optionContent">
             <input id="wpm" type="text" />
           </div>
@@ -18,7 +24,13 @@
 
         <!-- Punctuation pause -->
         <div class="optionRow">
-          <div class="optionDesc">Punctuation pause in ms</div>
+          <div class="optionDesc">
+            Punctuation pause in ms <br />
+            <span>
+              Pause reading at puctuation characters. Set this to 0 if you don't want to pause at
+              punctuations
+            </span>
+          </div>
           <div class="optionContent">
             <input id="puncPause" type="text" />
           </div>
@@ -26,10 +38,28 @@
 
         <!-- Font size -->
         <div class="optionRow">
-          <div class="optionDesc">Font size in px</div>
+          <div class="optionDesc">
+            Font size in px <br />
+            <span>
+              How big you want the reading font size to be
+            </span>
+          </div>
           <div class="optionContent">
             <input id="fontSize" type="text" maxlength="2" />
           </div>
+        </div>
+
+        <hr style="clear: left" />
+        <div style="font-size: 70%; color: blue">
+          <p />
+          Keyboard shortcuts are case-sensitive. Also make sure you choose keyboard shortcuts that
+          are least conflicting with the website page. For example Google Reader uses 'r' key to
+          refresh page. You might not want to pick the same key for launching Reasy.
+          <p />
+          Reasy can skip some words backwards and forwards as you read and you can choose keys to do
+          that. It can skip sentences back and forwards too. There's also an option to read slow
+          until you get back to the original position, if you skip some words backwards.
+          <p />
         </div>
 
         <!-- Key to launch Reasy -->
@@ -145,4 +175,4 @@
   </body>
 </html>
 
-<!-- vim:set sw=2: -->
+<!-- vim:set sw=2 tw=100: -->
