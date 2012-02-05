@@ -1,4 +1,8 @@
 
+function log(message) {
+  console.log(message);
+}
+
 var defaultOptions = {
   "wpm": 350,
   "puncPause": 650,
@@ -58,7 +62,7 @@ function rwOption(request, sender, sendResponse)
       break;
 
     default:
-      REASY.log("Unknown request header: " +  request.header);
+      log("Unknown request header: " +  request.header);
       break;
   }
 
