@@ -179,6 +179,11 @@ REASY.keyHandler = function () {
 };
 
 
+function applyTextColors(item, options) {
+  item.css("background-color", options.backgroundColor);
+  item.css("color", options.foregroundColor);
+}
+
 // Insert necessary HTML items into the page so that we have a stage to
 // display the text
 REASY.prepareStage = function () {
@@ -214,23 +219,25 @@ REASY.prepareStage = function () {
               "width": stageW,
               "height": parseInt(REASY.options.fontSize)
                         + (REASY.titleHeight * 2) + "px",
-              "background-color": "black",
               "font-family": "sans-serif"
           })
       .attr("id", "reasy-stage")
       .load(url)
       .appendTo($("body"));
+    applyTextColors(REASY.stage, REASY.options);
 
     $("#reasy-text-container")
       .css("height", parseInt(REASY.options.fontSize) + 5 + "px");
 
     // Text area
     REASY.textArea = $("#reasy-text")
-      .css("font-size", REASY.options.fontSize + "px")
-      .css("line-height", REASY.options.fontSize + "px");
+      .css( { "font-size": REASY.options.fontSize + "px",
+              "line-height": REASY.options.fontSize + "px" });
+    applyTextColors(REASY.textArea, REASY.options);
 
     // WPM
     REASY.wpmSpan = $("#reasy-wpm");
+    applyTextColors(REASY.wpmSpan, REASY.options);
 
     // Click handlers
     $("#reasy-close").click(REASY.hideStage);
