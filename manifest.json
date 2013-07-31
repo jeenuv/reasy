@@ -3,8 +3,12 @@
   "name": "Reasy",
   "version": "0.0.1",
   "description": "Reasy for Chrome",
-  "background_page": "background.html",
+  "background": {
+    "scripts": [ "background.js" ],
+    "persistent": true
+  },
   "options_page": "options.html",
+  "manifest_version": 2,
   "permissions": [
     "tabs",
     "contextMenus",
@@ -20,6 +24,9 @@
     "16": "icon48.png",
     "48": "icon48.png",
     "128": "icon128.png"
-  }
+  },
+  "web_accessible_resources": [
+    "reasy-stage.html"
+  ]
 }
 
