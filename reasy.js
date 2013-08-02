@@ -214,6 +214,7 @@ REASY.prepareStage = function () {
 
     // The grand main outer div
     REASY.stage = $("<div>")
+      // Some static styles
       .css( { "left": stageX,
               "top": stageY,
               "width": stageW,
@@ -224,7 +225,12 @@ REASY.prepareStage = function () {
       .attr("id", "reasy-stage")
       .load(url)
       .appendTo($("body"));
+
+    // Apply text colors
     applyTextColors(REASY.stage, REASY.options);
+
+    // Apply z-index
+    REASY.stage.css("z-index", REASY.options.zIndex);
 
     $("#reasy-text-container")
       .css("height", parseInt(REASY.options.fontSize) + 5 + "px");

@@ -2,7 +2,6 @@
 /* Main stage */
 #reasy-stage {
   position: fixed;
-  z-index: 10000;
   display: block;
   border-radius: 10px;
   /* Remaining properties set according to option */

@@ -8,6 +8,7 @@ var defaultOptions = {
   "puncPause": 650,
   "backgroundColor": "black",
   "foregroundColor": "white",
+  "zIndex": 10000,
   "fontSize": 40,
   "launchKey": "R",
   "pauseKey": "p",
