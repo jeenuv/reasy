@@ -6,6 +6,8 @@ function log(message) {
 var defaultOptions = {
   "wpm": 350,
   "puncPause": 650,
+  "backgroundColor": "black",
+  "foregroundColor": "white",
   "fontSize": 40,
   "launchKey": "R",
   "pauseKey": "p",
