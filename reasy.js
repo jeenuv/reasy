@@ -208,10 +208,10 @@ REASY.prepareStage = function () {
       return;
     }
 
-    // Create the stage
-    var stageW = 500;
-    var stageX = window.innerWidth - stageW - 30;
-    var stageY = 10;
+    // Set stage positions: half way top and left
+    // 500 and 100 are hard coded for now
+    var stageX = (window.innerWidth - 500) / 2;
+    var stageY = (window.innerHeight - 100) / 2;
 
     // Load stage from template
     $.ajaxSetup({ async: false });
@@ -224,7 +224,7 @@ REASY.prepareStage = function () {
       // Some static styles
       .css( { "left": stageX,
               "top": stageY,
-              "width": stageW,
+              "width": 500,
               "height": parseInt(REASY.options.fontSize)
                         + (REASY.titleHeight * 2) + "px",
               "font-family": "sans-serif"
