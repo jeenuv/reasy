@@ -21,8 +21,9 @@ var defaultOptions = {
   "nWords": "10",
   "sbKey": "(",
   "sfKey": ")",
-  "debug": 0,
+  "dimPage": 1,
   "sos": 1,
+  "debug": 0,
 };
 
 function writeDefault() {

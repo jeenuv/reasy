@@ -190,6 +190,11 @@ REASY.prepareStage = function () {
   function initStage() {
     REASY.updateWPM();
     REASY.stage.css("display", "block");
+    // Hide dimmer if not chosen to display
+    if (REASY.options.dimPage)
+      REASY.dimmer.css("display", "block");
+    else
+      REASY.dimmer.css("display", "none");
     // Register handlers
     $(document).keyup(REASY.keyHandler);
   }
@@ -212,6 +217,8 @@ REASY.prepareStage = function () {
     $.ajaxSetup({ async: false });
     var url = chrome.extension.getURL("reasy-stage.html");
 
+    var body = $("body");
+
     // The grand main outer div
     REASY.stage = $("<div>")
       // Some static styles
@@ -224,13 +231,19 @@ REASY.prepareStage = function () {
           })
       .attr("id", "reasy-stage")
       .load(url)
-      .appendTo($("body"));
+      .appendTo(body);
+
+    // Create dimmer. Rest of style from CSS
+    REASY.dimmer = $("<div>")
+      .attr("id", "reasy-dimmer")
+      .appendTo(body);
 
     // Apply text colors
     applyTextColors(REASY.stage, REASY.options);
 
-    // Apply z-index
+    // Apply z-indices
     REASY.stage.css("z-index", REASY.options.zIndex);
+    REASY.dimmer.css("z-index", REASY.options.zIndex - 1);
 
     $("#reasy-text-container")
       .css("height", parseInt(REASY.options.fontSize) + 5 + "px");
@@ -274,8 +287,8 @@ REASY.prepareStage = function () {
 // End of reading session
 REASY.hideStage = function () {
   // Hide stage
-  if (REASY.stage != null)
-    REASY.stage.css("display", "none");
+  REASY.stage.css("display", "none");
+  REASY.dimmer.css("display", "none");
   REASY.state = "stopped";
   REASY.textArea.text("");
   REASY.anchorIndex = 0;
