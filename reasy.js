@@ -300,7 +300,7 @@ REASY.hideStage = function () {
 
 
 // Continuously display content
-REASY.play = function () {
+REASY.play = function (initDelay) {
   var words = REASY.words;
   var index = REASY.nextIdx;
   var delay;
@@ -350,9 +350,12 @@ REASY.play = function () {
     }
     REASY.nextIdx++;
 
-    // Schedule read for updation
+    // Schedule read for updation. Use the initDelay only for the first word
     REASY.nextTick = parseInt(Date.now() + delay);
-    setTimeout(REASY.play, delay);
+    if (initDelay && index == 0)
+      setTimeout(REASY.play, initDelay);
+    else
+      setTimeout(REASY.play, delay);
   } else
     REASY.hideStage();
 };
@@ -379,7 +382,9 @@ REASY.run = function () {
 
   // Prepare the stage and fire off!
   REASY.prepareStage();
-  REASY.play();
+
+  // Allow a an initial short delay. Easy to set eye on
+  REASY.play(1000);
 };
 
 
